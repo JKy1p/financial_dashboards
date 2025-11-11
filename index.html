@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>October 2025 Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        :root {
+            /* Light mode colors */
+            --bg-color: #F7F7F5;
+            --card-bg: #FFFFFF;
+            --card-text: #252525;
+            --card-label: #666666;
+            --card-shadow: rgba(0, 0, 0, 0.08);
+            
+            /* Chart colors for light mode */
+            --chart-text: #666666;
+            --chart-tooltip-bg: rgba(255, 255, 255, 0.95);
+            --chart-border: #e5e5e5;
+            
+            /* Client bar colors for light mode - strong, readable on white */
+            --chart-surepoint: #2563eb;
+            --chart-lbaps: #ea580c;
+            --chart-arctic: #0ea5e9;
+            --chart-motiv: #10b981;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark mode colors */
+                --bg-color: #1a1a1a;
+                --card-bg: #232323;
+                --card-text: #eeeeee;
+                --card-label: #9ca3af;
+                --card-shadow: rgba(0, 0, 0, 0.3);
+                
+                /* Chart colors for dark mode */
+                --chart-text: #9ca3af;
+                --chart-tooltip-bg: rgba(50, 50, 50, 0.95);
+                --chart-border: #2a2a2a;
+                
+                /* Client bar colors for dark mode - strong, readable on dark */
+                --chart-surepoint: #4285F4;
+                --chart-lbaps: #ffa500;
+                --chart-arctic: #93c5fd;
+                --chart-motiv: #6ecd92;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--card-text);
+            padding: 40px 20px;
+            line-height: 1.6;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--card-text);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .metrics-row {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--card-shadow);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .metric-card {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--card-label);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--card-text);
+        }
+
+        .chart-card {
+            min-height: 280px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--card-label);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 240px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-row {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>October 2025 Dashboard</h1>
+        
+        <div class="dashboard-grid">
+            <div class="metrics-row">
+                <div class="card metric-card">
+                    <div class="metric-label">Billable</div>
+                    <div class="metric-value">53 hours</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-label">Delivery</div>
+                    <div class="metric-value">29 hours</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-label">Target Progress</div>
+                    <div class="metric-value">95 percent</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-label">Total Revenue</div>
+                    <div class="metric-value">$5,722</div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="chart-title">Total Hours by Client per Week</div>
+                <div class="chart-container">
+                    <canvas id="hoursChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="chart-title">Revenue by Client</div>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sanitize numeric values
+        const parseNum = (val) => {
+            if (typeof val === 'number') return val;
+            if (typeof val === 'string') {
+                const cleaned = val.replace(/[$,]/g, '');
+                return parseFloat(cleaned) || 0;
+            }
+            return 0;
+        };
+
+        // Format revenue for display
+        const formatRevenue = (val) => {
+            const num = parseNum(val);
+            if (num >= 1000) {
+                return '$' + (num / 1000).toFixed(1) + 'K';
+            }
+            return '$' + num.toFixed(0);
+        };
+
+        // Get theme colors from CSS variables
+        const getThemeColors = () => {
+            const styles = getComputedStyle(document.body);
+            return {
+                clientColors: {
+                    'SUREPOINT': styles.getPropertyValue('--chart-surepoint').trim(),
+                    'LBAPS': styles.getPropertyValue('--chart-lbaps').trim(),
+                    'ARCTIC SPAS': styles.getPropertyValue('--chart-arctic').trim(),
+                    'MOTIV': styles.getPropertyValue('--chart-motiv').trim()
+                },
+                chartColors: {
+                    text: styles.getPropertyValue('--chart-text').trim(),
+                    tooltipBg: styles.getPropertyValue('--chart-tooltip-bg').trim(),
+                    borderColor: styles.getPropertyValue('--chart-border').trim()
+                }
+            };
+        };
+
+        const cicgData = [
+            { week: "Wk40. Sep 29 - Oct 5", client: "ARCTIC SPAS", hours: 0.75, total: 55.62 },
+            { week: "Wk40. Sep 29 - Oct 5", client: "ARCTIC SPAS", hours: 3.04, total: 225.65 },
+            { week: "Wk40. Sep 29 - Oct 5", client: "MOTIV", hours: 0.50, total: 37.18 },
+            { week: "Wk40. Sep 29 - Oct 5", client: "MOTIV", hours: 0.67, total: 49.48 },
+            { week: "Wk40. Sep 29 - Oct 5", client: "SUREPOINT", hours: 17.22, total: 1276.89 },
+            { week: "Wk41. Oct 6 - 12", client: "ARCTIC SPAS", hours: 2.76, total: 204.97 },
+            { week: "Wk41. Oct 6 - 12", client: "MOTIV", hours: 0.48, total: 35.39 },
+            { week: "Wk41. Oct 6 - 12", client: "SUREPOINT", hours: 7.02, total: 520.95 },
+            { week: "Wk42. Oct 13 - 19", client: "SUREPOINT", hours: 9.98, total: 740.43 },
+            { week: "Wk43. Oct 20 - 26", client: "SUREPOINT", hours: 7.49, total: 555.46 },
+            { week: "Wk44. Oct 27 - Nov 2", client: "SUREPOINT", hours: 0.87, total: 64.35 },
+            { week: "Wk44. Oct 27 - Nov 2", client: "SUREPOINT", hours: 2.09, total: 155.24 }
+        ];
+
+        const upworkData = [
+            { week: "Wk40. Sep 29 - Oct 5", client: "LBAPS", hours: 2.55, total: 1800.00 },
+            { week: "Wk41. Oct 6 - 12", client: "LBAPS", hours: 14.59, total: 0 },
+            { week: "Wk42. Oct 13 - 19", client: "LBAPS", hours: 9.43, total: 0 },
+            { week: "Wk43. Oct 20 - 26", client: "LBAPS", hours: 2.55, total: 0 }
+        ];
+
+        // Calculate total hours by client with sanitized values
+        const hoursByClient = {};
+        const allData = [...cicgData, ...upworkData];
+        allData.forEach(item => {
+            if (!hoursByClient[item.client]) {
+                hoursByClient[item.client] = 0;
+            }
+            hoursByClient[item.client] += parseNum(item.hours);
+        });
+
+        // Revenue by Client (Donut Chart) with sanitized values
+        const revenueByClient = {};
+        cicgData.forEach(item => {
+            if (!revenueByClient[item.client]) {
+                revenueByClient[item.client] = 0;
+            }
+            revenueByClient[item.client] += parseNum(item.total);
+        });
+
+        const clients = Object.keys(revenueByClient).sort((a, b) => revenueByClient[b] - revenueByClient[a]);
+        const revenues = clients.map(c => revenueByClient[c]);
+        const totalRevenue = revenues.reduce((sum, val) => sum + parseNum(val), 0);
+
+        // Donut Chart
+        let donutChart;
+        let hoursChart;
+        
+        const createDonutChart = () => {
+            const theme = getThemeColors();
+            const ctx = document.getElementById('donutChart');
+            
+            if (donutChart) {
+                donutChart.destroy();
+            }
+            
+            donutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: clients.map(c => c + ' (' + formatRevenue(revenueByClient[c]) + ')'),
+                datasets: [{
+                    data: revenues,
+                    backgroundColor: clients.map(c => theme.clientColors[c]),
+                    borderWidth: 2,
+                    borderColor: theme.chartColors.borderColor
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            boxWidth: 12,
+                            font: { size: 12 },
+                            padding: 12,
+                            color: theme.chartColors.text
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: theme.chartColors.tooltipBg,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                const percentage = ((value / totalRevenue) * 100).toFixed(1);
+                                return context.label + ': $' + value.toFixed(0) + ' (' + percentage + '%)';
+                            }
+                        }
+                    },
+                    datalabels: {
+                        display: false
+                    }
+                }
+            }
+        });
+        };
+
+        // Total Hours by Client per Week (Grouped Bar Chart)
+        const createHoursChart = () => {
+            const theme = getThemeColors();
+            const ctx = document.getElementById('hoursChart');
+            
+            if (hoursChart) {
+                hoursChart.destroy();
+            }
+        const weeks = ["Wk40. Sep 29 - Oct 5", "Wk41. Oct 6 - 12", "Wk42. Oct 13 - 19", "Wk43. Oct 20 - 26", "Wk44. Oct 27 - Nov 2"];
+        const allClients = ['SUREPOINT', 'LBAPS', 'ARCTIC SPAS', 'MOTIV'];
+        
+        const hoursByClientWeek = {};
+        allClients.forEach(client => {
+            hoursByClientWeek[client] = {};
+            weeks.forEach(week => {
+                hoursByClientWeek[client][week] = 0;
+            });
+        });
+
+        cicgData.forEach(item => {
+            hoursByClientWeek[item.client][item.week] += parseNum(item.hours);
+        });
+
+        upworkData.forEach(item => {
+            hoursByClientWeek[item.client][item.week] += parseNum(item.hours);
+        });
+
+        // Sort clients by total hours (descending)
+        const sortedClients = allClients.sort((a, b) => hoursByClient[b] - hoursByClient[a]);
+
+        const datasets = sortedClients.map(client => ({
+            label: client + ' (' + Math.round(hoursByClient[client]) + 'h)',
+            data: weeks.map(week => hoursByClientWeek[client][week]),
+            backgroundColor: theme.clientColors[client],
+            barThickness: 15,
+            categoryPercentage: 1.0,
+            barPercentage: 0.95
+        }));
+
+        hoursChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: weeks,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: theme.chartColors.text,
+                            font: { size: 10 }
+                        }
+                    },
+                    y: {
+                        stacked: false,
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            padding: 12,
+                            font: { size: 12 },
+                            boxWidth: 12,
+                            color: theme.chartColors.text
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: theme.chartColors.tooltipBg,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label.split(' (')[0] + ': ' + context.parsed.y.toFixed(1) + 'h';
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: (value) => value > 0 ? value.toFixed(1) + 'h' : '',
+                        font: {
+                            size: 9,
+                            weight: 'bold'
+                        },
+                        color: theme.chartColors.text
+                    }
+                }
+            }
+        });
+        };
+
+        // Initial chart creation
+        createDonutChart();
+        createHoursChart();
+
+        // Listen for theme changes and recreate charts
+        const themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        themeMediaQuery.addEventListener('change', () => {
+            createDonutChart();
+            createHoursChart();
+        });
+    </script>
+</body>
+</html>
