@@ -156,25 +156,25 @@
 <body>
     <div class="dashboard-scale">
     <div class="container">
-        <h1>October 2025 Dashboard</h1>
+        <h1>November 2025 Dashboard</h1>
         
         <div class="dashboard-grid">
             <div class="metrics-row">
                 <div class="card metric-card">
                     <div class="metric-label">Billable</div>
-                    <div class="metric-value">11 hours</div>  
+                    <div class="metric-value">17.53 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Delivery</div>
-                    <div class="metric-value">1 hour</div>
+                    <div class="metric-value">3.65 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Target Progress</div>
-                    <div class="metric-value">14 percent</div>
+                    <div class="metric-value">21.67 percent</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Total Revenue</div>
-                    <div class="metric-value">$808</div>
+                    <div class="metric-value">$1,299.92</div>
                 </div>
             </div>
 
@@ -233,19 +233,14 @@
         };
 
         const cicgData = [
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 8.42, total: 624.65 },
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 2.47, total: 183.38 },
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 0.77, total: 57.08 },
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 4.34, total: 320.87 },
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 0.23, total: 16.94 },
-            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 0.20, total: 14.88 }
+            { week: "Wk45. Nov 3 - 9", client: "ARCTIC SPAS", hours: 10.90, total: 808.04 },
+            { week: "Wk46. Nov 10 - 16", client: "ARCTIC SPAS", hours: 6.63, total: 491.89 }
         ];
 
         const upworkData = [
-            { week: "Wk45. Nov 3 - 9", client: "LBAPS", hours: 0.87, total: 0 },
-            { week: "Wk45. Nov 3 - 9", client: "LBAPS", hours: 0.25, total: 0 }
+            { week: "Wk45. Nov 3 - 9", client: "LBAPS", hours: 2.53, total: 0 },
+            { week: "Wk45. Nov 3 - 9", client: "LBAPS", hours: 1.12, total: 0 }
         ];
-
 
         // Calculate total hours by client with sanitized values
         const hoursByClient = {};
@@ -335,8 +330,8 @@
             if (hoursChart) {
                 hoursChart.destroy();
             }
-        const weeks = ["Wk45. Nov 3 - 9"]; // Add new weeks as they appear in your data
-        const allClients = ["ARCTIC SPAS", "LBAPS"]; // Update to include only clients present in your new data
+        const weeks = ["Wk45. Nov 3 - 9", "Wk46. Nov 10 - 16"];
+        const allClients = ['ARCTIC SPAS', 'LBAPS'];
         
         const hoursByClientWeek = {};
         allClients.forEach(client => {
