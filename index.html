@@ -162,19 +162,19 @@
             <div class="metrics-row">
                 <div class="card metric-card">
                     <div class="metric-label">Billable</div>
-                    <div class="metric-value">13.53 hours</div>
+                    <div class="metric-value">19.61 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Delivery</div>
-                    <div class="metric-value">3.00 hours</div>
+                    <div class="metric-value">3.32 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Target Progress</div>
-                    <div class="metric-value">16.73%</div>
+                    <div class="metric-value">24.24%</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Total Revenue</div>
-                    <div class="metric-value">$1,003.51</div>
+                    <div class="metric-value">$1,454.44</div>
                 </div>
             </div>
 
@@ -238,6 +238,12 @@
                     client: "ARCTIC SPAS",
                     hours: 13.53,
                     total: 1003.51
+          },
+          {
+                    week: "Wk50. Dec 8 - 14",
+                    client: "ARCTIC SPAS",
+                    hours: 6.08,
+                    total: 450.93
           }
 ];
 
@@ -246,6 +252,12 @@
                     week: "Wk49. Dec 1 - 7",
                     client: "LBAPS",
                     hours: 3,
+                    total: 0
+          },
+          {
+                    week: "Wk50. Dec 8 - 14",
+                    client: "LBAPS",
+                    hours: 0.32,
                     total: 0
           }
 ];
@@ -338,7 +350,7 @@
             if (hoursChart) {
                 hoursChart.destroy();
             }
-        const weeks = ["Wk49. Dec 1 - 7"];
+        const weeks = ["Wk49. Dec 1 - 7","Wk50. Dec 8 - 14"];
         const allClients = ['ARCTIC SPAS', 'LBAPS'];
         
         const hoursByClientWeek = {};
