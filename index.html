@@ -162,19 +162,19 @@
             <div class="metrics-row">
                 <div class="card metric-card">
                     <div class="metric-label">Billable</div>
-                    <div class="metric-value">23.39 hours</div>
+                    <div class="metric-value">32.49 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Delivery</div>
-                    <div class="metric-value">12.83 hours</div>
+                    <div class="metric-value">16.51 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Target Progress</div>
-                    <div class="metric-value">28.91%</div>
+                    <div class="metric-value">40.16%</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Total Revenue</div>
-                    <div class="metric-value">$1,734.40</div>
+                    <div class="metric-value">$2,409.38</div>
                 </div>
             </div>
 
@@ -236,14 +236,26 @@
           {
                     week: "Wk49. Dec 1 - 7",
                     client: "ARCTIC SPAS",
-                    hours: 17.31,
-                    total: 1283.46
+                    hours: 17.65,
+                    total: 1308.84
           },
           {
                     week: "Wk50. Dec 8 - 14",
                     client: "ARCTIC SPAS",
                     hours: 6.08,
                     total: 450.93
+          },
+          {
+                    week: "Wk51. Dec 15 - 21",
+                    client: "ARCTIC SPAS",
+                    hours: 2.76,
+                    total: 204.64
+          },
+          {
+                    week: "Wk51. Dec 15 - 21",
+                    client: "ARCTIC SPAS",
+                    hours: 6,
+                    total: 444.96
           }
 ];
 
@@ -258,6 +270,12 @@
                     week: "Wk50. Dec 8 - 14",
                     client: "LBAPS",
                     hours: 9.83,
+                    total: 0
+          },
+          {
+                    week: "Wk51. Dec 15 - 21",
+                    client: "LBAPS",
+                    hours: 3.68,
                     total: 0
           }
 ];
@@ -350,7 +368,7 @@
             if (hoursChart) {
                 hoursChart.destroy();
             }
-        const weeks = ["Wk49. Dec 1 - 7","Wk50. Dec 8 - 14"];
+        const weeks = ["Wk49. Dec 1 - 7","Wk50. Dec 8 - 14","Wk51. Dec 15 - 21"];
         const allClients = ['ARCTIC SPAS', 'LBAPS'];
         
         const hoursByClientWeek = {};
