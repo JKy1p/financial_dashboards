@@ -162,19 +162,19 @@
             <div class="metrics-row">
                 <div class="card metric-card">
                     <div class="metric-label">Billable</div>
-                    <div class="metric-value">0.00 hours</div>
+                    <div class="metric-value">22.84 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Delivery</div>
-                    <div class="metric-value">11.59 hours</div>
+                    <div class="metric-value">18.21 hours</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Target Progress</div>
-                    <div class="metric-value">0.00%</div>
+                    <div class="metric-value">22.41%</div>
                 </div>
                 <div class="card metric-card">
                     <div class="metric-label">Total Revenue</div>
-                    <div class="metric-value">$0.00</div>
+                    <div class="metric-value">$1,344.73</div>
                 </div>
             </div>
 
@@ -232,20 +232,33 @@
             };
         };
 
-        const cicgData = [];
+        const cicgData = [
+          {
+                    week: "Wk2. Jan 5 - 11",
+                    client: "ARCTIC SPAS",
+                    hours: 3.5,
+                    total: 259.56
+          },
+          {
+                    week: "Wk3. Jan 12 - 18",
+                    client: "ARCTIC SPAS",
+                    hours: 1.13,
+                    total: 83.51
+          }
+];
 
         const upworkData = [
           {
                     week: "Wk2. Jan 5 - 11",
                     client: "LBAPS",
-                    hours: 4.68,
-                    total: 0
+                    hours: 11.59,
+                    total: 637.25
           },
           {
-                    week: "Wk2. Jan 5 - 11",
+                    week: "Wk3. Jan 12 - 18",
                     client: "LBAPS",
-                    hours: 6.91,
-                    total: 0
+                    hours: 6.63,
+                    total: 364.41
           }
 ];
 
@@ -337,7 +350,7 @@
             if (hoursChart) {
                 hoursChart.destroy();
             }
-        const weeks = ["Wk2. Jan 5 - 11"];
+        const weeks = ["Wk2. Jan 5 - 11","Wk3. Jan 12 - 18"];
         const allClients = ['ARCTIC SPAS', 'LBAPS'];
         
         const hoursByClientWeek = {};
